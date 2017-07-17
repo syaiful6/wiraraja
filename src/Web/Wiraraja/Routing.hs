@@ -1,4 +1,3 @@
-{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Web.Wiraraja.Routing
@@ -14,28 +13,30 @@ module Web.Wiraraja.Routing
   , routeMiddleware
   ) where
 
-import           Control.Applicative (Alternative, (<|>), empty)
+import Control.Applicative (Alternative, (<|>), empty)
 
-import           Data.Text (Text)
+import qualified Data.Text            as T
 
 import qualified Network.HTTP.Types   as H
-import           Network.Wai (Request, Application, Middleware, pathInfo, requestMethod)
+import Network.Wai (Request, Application, Middleware, pathInfo, requestMethod)
 
-type Path = Text
 
-data Route = Route !H.Method [Path]
+type Path = T.Text
+
+data Route = Route H.Method [Path]
 
 newtype Match a = Match (Route -> Maybe (Route, a))
 
 -- | Match against an end path piece
 end :: Match ()
 end = Match $ \(Route m rp) -> case rp of
-    "" : []      -> Just (Route m [], ())
     []           -> Just (Route m [], ())
+    p : []
+      | T.null p -> Just (Route m [], ())
     _            -> Nothing
 
-lit :: Text -> Match ()
-lit !t = parseSegment parse
+lit :: T.Text -> Match ()
+lit t = parseSegment parse
   where
     parse s
       | s == t    = Just ()
@@ -49,14 +50,14 @@ bool = parseSegment parse
       | s == "false" = Just False
       | otherwise    = Nothing
 
-text :: Match Text
+text :: Match T.Text
 text = parseSegment Just
 
 method :: H.Method -> Match H.Method
-method !n = Match $ \(Route m rp) ->
+method n = Match $ \(Route m rp) ->
     if n == m then Just (Route m rp, m) else Nothing
 
-parseSegment :: (Text -> Maybe a) -> Match a
+parseSegment :: (T.Text -> Maybe a) -> Match a
 parseSegment k = Match $ \(Route m rp) -> case rp of
     p : ps    -> (\x -> (Route m ps, x)) <$> k p
     _         -> Nothing
@@ -65,7 +66,7 @@ runMatch :: Match a -> Route -> Maybe a
 runMatch (Match k) r = maybe Nothing (Just . snd) (k r)
 
 buildRoute :: Request -> Route
-buildRoute !req = Route (requestMethod req) (pathInfo req)
+buildRoute req = Route (requestMethod req) (pathInfo req)
 
 routeMiddleware :: Match Application -> Middleware
 routeMiddleware match app req = case runMatch match (buildRoute req) of

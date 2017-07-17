@@ -2,14 +2,17 @@
 
 module Web.Wiraraja.RoutingSpec (spec) where
 
-import           Control.Applicative ((<|>))
+import Control.Applicative ((<|>))
 
 import qualified Data.Text as T
-import           Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe)
 
 import qualified Network.HTTP.Types as H
-import           Test.Hspec
-import           Web.Wiraraja.Routing
+
+import Test.Hspec
+
+import Web.Wiraraja.Routing
+
 
 data Page = Home
           | About

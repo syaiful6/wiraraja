@@ -16,8 +16,19 @@ dependencies:
   - bytestring
   - containers
   - http-types >= 0.7
+  - lifted-base >= 0.2.3 && < 0.2.4
+  - monad-control >= 1.0.0.0 && < 1.1
+  - monad-logger >= 0.3 && < 0.4
+  - mtl >= 2.1.0 && < 2.3.0
+  - persistent >= 2.5
+  - persistent-postgresql >= 2.5
+  - persistent-template >= 2.5
   - text
+  - transformers >= 0.3.0 && < 0.6
+  - transformers-base >= 0.4.0 && < 0.5
+  - transformers-compat >= 0.3.0
   - wai == 3.*
+  - wai-extra == 3.*
   - warp == 3.*
 
 library:
@@ -31,7 +42,7 @@ executables:
     ghc-options: -Wall -O2 -fno-warn-unused-do-bind -threaded -rtsopts -with-rtsopts=-N
     dependencies:
       - wiraraja
-      - optparse-applicative >=0.13.0
+      - optparse-applicative >= 0.13.0
 
 tests:
   spec:
