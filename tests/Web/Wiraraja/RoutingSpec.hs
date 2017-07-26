@@ -50,3 +50,11 @@ spec = do
         it "Should capture the parameter correctly" $ do
             let users = matchRoute $ Route H.methodPost ["users", "foo"]
             users `shouldBe` Users H.methodPost "foo"
+
+        it "Should match against with url last backslash" $ do
+            let users = matchRoute $ Route H.methodPost ["users", "foo", ""]
+            users `shouldBe` Users H.methodPost "foo"
+
+        it "Should not match if there are still parts need to match" $ do
+            let notfound = matchRoute $ Route H.methodPost ["users", "foo", "", "rest"]
+            notfound `shouldBe` NotFound

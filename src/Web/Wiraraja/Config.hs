@@ -15,6 +15,7 @@ import Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 
 import System.Environment (lookupEnv)
 
+
 -- | The config for our application
 data Config = Config
     { getPool :: ConnectionPool
@@ -52,16 +53,16 @@ makeConnPoolEnv = do
     let prodStr = mconcat . zipWith (<>) keys $ BS.pack <$> envList
     runStdoutLoggingT $ createPostgresqlPool prodStr (envPool Production)
   where
-      keys = [ "host="
-             , "port="
-             , "user="
-             , "password="
-             , "dbname=" ]
-      envs = [ "PGHOST"
-             , "PGPORT"
-             , "PGUSER"
-             , "PGPASS"
-             , "PGDATABASE" ]
+    keys = [ "host="
+            , "port="
+            , "user="
+            , "password="
+            , "dbname=" ]
+    envs = [ "PGHOST"
+            , "PGPORT"
+            , "PGUSER"
+            , "PGPASS"
+            , "PGDATABASE" ]
 
 -- | The number of pools to use for a given environment.
 envPool :: Environment -> Int
