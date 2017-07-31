@@ -2,24 +2,31 @@
 
 module Web.Wiraraja.Config where
 
-import Control.Exception (throwIO)
-import Control.Monad.Logger (runNoLoggingT, runStdoutLoggingT)
-import Control.Monad.Trans.Maybe (MaybeT(..), runMaybeT)
+import           Control.Exception (throwIO)
+import           Control.Monad.Except (ExceptT)
+import           Control.Monad.Logger (runNoLoggingT, runStdoutLoggingT)
+import           Control.Monad.Reader (ReaderT)
+import           Control.Monad.Trans.Maybe (MaybeT(..), runMaybeT)
 
 import qualified Data.ByteString.Char8 as BS
-import Data.Monoid ((<>))
-import Database.Persist.Postgresql (ConnectionPool, ConnectionString, createPostgresqlPool)
+import           Data.Monoid ((<>))
+import           Database.Persist.Postgresql (ConnectionPool, ConnectionString
+                                             ,createPostgresqlPool)
 
-import Network.Wai (Middleware)
-import Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
+import           Network.Wai (Middleware)
+import           Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 
-import System.Environment (lookupEnv)
+import           System.Environment (lookupEnv)
+
+import           Web.Wiraraja.HTTPError (HTTPError)
 
 
 -- | The config for our application
 data Config = Config
     { getPool :: ConnectionPool
     , getEnv  :: Environment }
+
+type AppM = ReaderT Config (ExceptT HTTPError IO)
 
 -- | The Environment of our application.
 data Environment = Development
@@ -54,15 +61,15 @@ makeConnPoolEnv = do
     runStdoutLoggingT $ createPostgresqlPool prodStr (envPool Production)
   where
     keys = [ "host="
-            , "port="
-            , "user="
-            , "password="
-            , "dbname=" ]
+           , "port="
+           , "user="
+           , "password="
+           , "dbname=" ]
     envs = [ "PGHOST"
-            , "PGPORT"
-            , "PGUSER"
-            , "PGPASS"
-            , "PGDATABASE" ]
+           , "PGPORT"
+           , "PGUSER"
+           , "PGPASS"
+           , "PGDATABASE" ]
 
 -- | The number of pools to use for a given environment.
 envPool :: Environment -> Int

@@ -13,6 +13,8 @@ extra-source-files:
 
 dependencies:
   - base >= 4.7 && < 5
+  - blaze-builder
+  - blaze-html
   - bytestring
   - containers
   - http-types >= 0.7
