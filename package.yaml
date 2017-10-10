@@ -12,11 +12,14 @@ extra-source-files:
   - README.md
 
 dependencies:
+  - auto-update
   - base >= 4.7 && < 5
   - blaze-builder
   - blaze-html
   - bytestring
+  - cereal >= 0.3
   - containers
+  - cookie >= 0.4.2 && < 0.5
   - http-types >= 0.7
   - lifted-base >= 0.2.3 && < 0.2.4
   - monad-control >= 1.0.0.0 && < 1.1
@@ -26,6 +29,7 @@ dependencies:
   - persistent-postgresql >= 2.5
   - persistent-template >= 2.5
   - text
+  - time >= 1.1.4
   - transformers >= 0.3.0 && < 0.6
   - transformers-base >= 0.4.0 && < 0.5
   - transformers-compat >= 0.3.0
