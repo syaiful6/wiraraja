@@ -24,7 +24,7 @@ import           Network.Wai (Request, Application, Middleware, pathInfo
 
 type Path = T.Text
 
-data Route = Route H.Method [Path]
+data Route = Route !H.Method ![Path]
 
 newtype Match a = Match (Route -> Maybe (Route, a))
 
@@ -38,7 +38,7 @@ end = Match $ \(Route m rp) -> case rp of
 {-# INLINE end #-}
 
 lit :: T.Text -> Match ()
-lit t = parseSegment parse
+lit !t = parseSegment parse
   where
     parse s
       | s == t    = Just ()

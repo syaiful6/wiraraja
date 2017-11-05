@@ -3,9 +3,7 @@
 module Web.Wiraraja.Config where
 
 import           Control.Exception (throwIO)
-import           Control.Monad.Except (ExceptT)
 import           Control.Monad.Logger (runNoLoggingT, runStdoutLoggingT)
-import           Control.Monad.Reader (ReaderT)
 import           Control.Monad.Trans.Maybe (MaybeT(..), runMaybeT)
 
 import qualified Data.ByteString.Char8 as BS
@@ -18,15 +16,10 @@ import           Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 
 import           System.Environment (lookupEnv)
 
-import           Web.Wiraraja.HTTPError (HTTPError)
-
-
 -- | The config for our application
 data Config = Config
     { getPool :: ConnectionPool
     , getEnv  :: Environment }
-
-type AppM = ReaderT Config (ExceptT HTTPError IO)
 
 -- | The Environment of our application.
 data Environment = Development
